@@ -7,6 +7,7 @@ const DEPTH = 4;
 var tigersTurn = false;
 var numSheepInBasket = 20;
 var numSheepKilled = 0;
+var moves = [];
 
 var board = [
 				[TIGER, 0, 0, 0, TIGER],
@@ -46,8 +47,85 @@ function moveTiger(){
 	alphabeta(board, DEPTH, alpha, beta);
 }
 
-function generateMoves(){
+function isTigersMove(depth){
+	if( (DEPTH-depth) % 2 == 0){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function movesFromHere(x,y){
+	if(	
+		isUnOccupied(x-1,y) ||
+		isUnOccupied(x+1,y) ||
+		isUnOccupied(x,y-1) ||
+		isUnOccupied(x,y+1)
+	){
+	  	return true;
+	}
+		
+	// Is diagonal movement possible?
+	if(	((x+y) % 2 == 0) && (  //diagonal movement is allowed from only these points
+		isUnOccupied(x-1,y-1) ||
+		isUnOccupied(x-1,y+1) ||
+		isUnOccupied(x+1,y-1) ||
+		isUnOccupied(x+1,y+1) )
+	 ){
+	  	return true;
+	 }
+
+}
+
+function possibleMoveDirections(x,y){
+	var directions = [
+		[x-1,y],
+		[x+1,y],
+		[x,y-1],
+		[x,y+1]
+	];
+
+	//diagonal movement is allowed from only these points
+	if(	(x+y) % 2 == 0){   
+
+		directions.push( 
+			[x-1,y-1],
+			[x-1,y+1],
+			[x+1,y-1],
+			[x+1,y+1]
+		)
+	 }
+	 
+	 return directions;
+
+}
+
+//console.log(possibleMoveDirections(1,0));
+
+
+function tigerCanMoveTo(){
 	
+}
+
+function generateMoves(){
+	if(isTigersMove()){
+		for(x in board){
+			for(y in board[x]){
+				x = parseInt(x);
+				y = parseInt(y);
+				if(board[x][y] == TIGER){
+					if(canMove(x,y)){
+						if(isUnOccupied(x-1,y)){
+							moves.push([x, y, x-1, y]);
+						}
+						if(isUnOccupied(x-1,y)){
+							moves.push([x, y, x-1, y]);
+						}
+					}
+				}		
+			}
+		}
+	}
 }
 
 function makeMove(){
@@ -58,7 +136,11 @@ function unMakeMove(){
 
 }
 
-function isUnOccupied(x,y){
+function isUnOccupied(point){
+
+	x =	point[0];
+	y = point[1];
+	
 	if(x>=0 && y>=0 && x<=4 && y<=4 && board[x][y]==0){
 		return true;
 	}else{
@@ -99,7 +181,11 @@ function isTerminal(){
 
 function canMove(x,y){
 	// Is horizontal or vertical movement possible?
-	if(	
+	
+	var directions = possibleMoveDirections(x,y);
+	return directions.some(isUnOccupied);
+	
+	/*if(	
 		isUnOccupied(x-1,y) ||
 		isUnOccupied(x+1,y) ||
 		isUnOccupied(x,y-1) ||
@@ -119,7 +205,7 @@ function canMove(x,y){
 	 }
 	 
 	 // Tiger is blocked
-	 return false;
+	 return false;*/
 }
 
 function evaluate(){
@@ -144,8 +230,8 @@ function evaluate(){
 
 function alphabeta(board, depth, alpha, beta){
 	if(isTerminal() || depth == 0)
-		return evaluate(board);
-	for(var numMoves = generateMoves(board);numMoves>0; numMoves--){
+		return evaluate(depth);
+	for(var numMoves = generateMoves(depth);numMoves>0; numMoves--){
 		makeMove();
 		alpha = Math.max(alpha, -alphabeta(board, depth-1, -beta, -alpha));
 		if(beta <= alpha){break;}
