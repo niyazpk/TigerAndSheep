@@ -1,16 +1,19 @@
 // constants
-var TIGER = 1;
-var SHEEP = 2;
+const TIGER = 1;
+const SHEEP = 2;
+const INFINITY = 99999;
+const DEPTH = 4;
 
-var tigerTurn = false;
+var tigersTurn = false;
 var numSheepInBasket = 20;
+var numSheepKilled = 0;
 
 var board = [
-				[1, 0, 0, 0, 1],
+				[TIGER, 0, 0, 0, TIGER],
 				[0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0],
-				[1, 0, 0, 0, 1]
+				[TIGER, 0, 0, 0, TIGER]
 			];
 		
 function drawBoard(){
@@ -38,10 +41,13 @@ function isValidMove(x,y){
 
 function moveTiger(){
 	console.log(evaluate());
+	var alpha = -INFINITY;
+	var beta = INFINITY;
+	alphabeta(board, DEPTH, alpha, beta);
 }
 
 function generateMoves(){
-
+	
 }
 
 function makeMove(){
@@ -54,6 +60,37 @@ function unMakeMove(){
 
 function isUnOccupied(x,y){
 	if(x>=0 && y>=0 && x<=4 && y<=4 && board[x][y]==0){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function areAllTigersBlocked(){
+	for(x in board){
+		for(y in board[x]){
+			x = parseInt(x);
+			y = parseInt(y);
+			if(board[x][y] == TIGER){
+				if(canMove(x,y)){
+					return false;
+				}
+			}		
+		}
+	}
+	return true;
+}
+
+function tooManySheepsAreKilled(){
+	if(numSheepKilled >= 5){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function isTerminal(){
+	if (areAllTigersBlocked() || tooManySheepsAreKilled()){
 		return true;
 	}else{
 		return false;
@@ -92,17 +129,29 @@ function evaluate(){
 		for(y in board[x]){
 			x = parseInt(x);
 			y = parseInt(y);
-			if(board[x][y] == 1){
+			if(board[x][y] == TIGER){
 				if(canMove(x,y)){
 					numMovableTiger += 1;
 				}
-			}else if(board[x][y] == 2){
+			}else if(board[x][y] == SHEEP){
 				numSheep += 1;
 			}		
 		}
 	}
 	console.log("numSheep:" + numSheep + " numMovableTiger:" + numMovableTiger)
 	return numSheep - numMovableTiger;
+}
+
+function alphabeta(board, depth, alpha, beta){
+	if(isTerminal() || depth == 0)
+		return evaluate(board);
+	for(var numMoves = generateMoves(board);numMoves>0; numMoves--){
+		makeMove();
+		alpha = Math.max(alpha, -alphabeta(board, depth-1, -beta, -alpha));
+		if(beta <= alpha){break;}
+		unMakeMove();
+	}
+	return alpha;
 }
 
 $(document).ready(function(){
@@ -112,9 +161,9 @@ $(document).ready(function(){
 		y = $(this).attr('y')
 		if(isValidMove(x,y)){
 			//console.log(x + " " + y + " " + numSheepInBasket);
-			board[x][y] = 2;
+			board[x][y] = SHEEP;
 			numSheepInBasket -= 1;
-			tigerTurn = true;
+			tigersTurn = true;
 			moveTiger();
 		}
 		drawBoard();

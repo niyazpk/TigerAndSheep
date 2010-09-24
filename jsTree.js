@@ -80,4 +80,3 @@ function alphabeta(node, depth, alpha, beta){
 	}
 	return alpha;
 }
-
