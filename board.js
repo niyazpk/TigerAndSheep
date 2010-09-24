@@ -37,20 +37,20 @@ function isValidMove(x,y){
 }
 
 function moveTiger(){
-	
+	console.log(evaluate());
 }
 
 function canMove(x,y){
 	if(	
-		board[x-1][y]!=0 &&
-		board[x+1][y]!=0 &&
-		board[x][y-1]!=0 &&
-		board[x][y+1]!=0 &&
+		(!board[x-1] ||  board[x-1][y]!=0) &&
+		(!board[x+1] ||  board[x+1][y]!=0) &&
+		(!board[0][y-1] ||  board[x][y-1]!=0) &&
+		(!board[0][y+1] ||  board[x][y+1]!=0) &&
 		
-		board[x-1][y-1]!=0 &&
-		board[x-1][y+1]!=0 &&
-		board[x+1][y-1]!=0 &&
-		board[x+1][y+1]!=0
+		(!board[x-1] || !board[0][y-1] ||  board[x-1][y-1]!=0) &&
+		(!board[x-1] || !board[0][y+1] ||  board[x-1][y+1]!=0) &&
+		(!board[x+1] || !board[0][y-1] ||  board[x+1][y-1]!=0) &&
+		(!board[x+1] || !board[0][y+1] ||  board[x+1][y+1]!=0)
 	 ){
 	  	return false;
 	 }
@@ -72,6 +72,8 @@ function evaluate(){
 			}		
 		}
 	}
+	
+	return numSheep - numMovableTiger;
 }
 
 $(document).ready(function(){
