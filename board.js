@@ -5,15 +5,15 @@ const INFINITY = 99999;
 const DEPTH = 4;
 
 var tigersTurn = false;
-var numSheepInBasket = 20;
+var numSheepsInBasket = 10;
 var numSheepKilled = 0;
 var moves = [];
 
 var board = [
     [TIGER, 0, 0, 0, TIGER],
     [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
+    [TIGER, 0, TIGER, 0, 0],
+    [0, TIGER, 0, 0, 0],
     [TIGER, 0, 0, 0, TIGER]
 ];
 
@@ -32,16 +32,18 @@ function drawBoard(){
 }
 
 function isValidMove(x,y){
-    if(numSheepInBasket > 0){
+    if(numSheepsInBasket > 0){
 	if(board[x][y] != 0){
 	    return false;
 	}
+    }else{
+	return false;
     }
     return true;
 }
 
 function moveTiger(){
-    console.log(evaluate());
+    evaluate();
     var alpha = -INFINITY;
     var beta = INFINITY;
     //alphabeta(board, DEPTH, alpha, beta);
@@ -77,7 +79,7 @@ function movesFromHere(x,y){
     
 }
 
-function possibleMoveDirections(x,y){
+function possibleMoveDirectionsFrom(x,y){
     var directions = [
 	[x-1,y],
 	[x+1,y],
@@ -85,9 +87,7 @@ function possibleMoveDirections(x,y){
 	[x,y+1]
     ];
     
-    //diagonal movement is allowed from only these points
-    if(	(x+y) % 2 == 0){   
-	
+    if(	(x+y) % 2 == 0){   //diagonal movement is allowed from only these points
 	directions.push( 
 	    [x-1,y-1],
 	    [x-1,y+1],
@@ -95,13 +95,8 @@ function possibleMoveDirections(x,y){
 	    [x+1,y+1]
 	)
     }
-    
     return directions;
-    
 }
-
-//console.log(possibleMoveDirections(1,0));
-
 
 function tigerCanMoveTo(){
 	
@@ -109,10 +104,10 @@ function tigerCanMoveTo(){
 
 function generateMoves(){
     if(isTigersMove()){
-	for(x in board){
-	    for(y in board[x]){
-		x = parseInt(x);
-		y = parseInt(y);
+	for(var x=0; x<5; x++){
+	    for(var y=0; y<5; y++){
+		//x = parseInt(x);
+		//y = parseInt(y);
 		if(board[x][y] == TIGER){
 		    if(canMove(x,y)){
 			if(isUnOccupied(x-1,y)){
@@ -182,30 +177,8 @@ function isTerminal(){
 function canMove(x,y){
     // Is horizontal or vertical movement possible?
     
-    var directions = possibleMoveDirections(x,y);
+    var directions = possibleMoveDirectionsFrom(x,y);
     return directions.some(isUnOccupied);
-    
-    /*if(	
-      isUnOccupied(x-1,y) ||
-      isUnOccupied(x+1,y) ||
-      isUnOccupied(x,y-1) ||
-      isUnOccupied(x,y+1)
-      ){
-      return true;
-      }
-      
-      // Is diagonal movement possible?
-      if(	((x+y) % 2 == 0) && (  //diagonal movement is allowed from only these points
-      isUnOccupied(x-1,y-1) ||
-      isUnOccupied(x-1,y+1) ||
-      isUnOccupied(x+1,y-1) ||
-      isUnOccupied(x+1,y+1) )
-      ){
-      return true;
-      }
-      
-      // Tiger is blocked
-      return false;*/
 }
 
 function evaluate(){
@@ -213,20 +186,16 @@ function evaluate(){
     var numMovableTiger = 0;
     for(var x=0; x<5; x++){
 	for(var y=0; y<5; y++){
-	    //x = parseInt(x);
-	    //y = parseInt(y);
-	    console.log("x: " + x + " y: " + y + " value: " + board[x][y]);
 	    if(board[x][y] == TIGER){
 		if(canMove(x,y)){
 		    numMovableTiger += 1;
 		}
 	    }else if(board[x][y] == SHEEP){
 		numSheep += 1;
-		console.log(x + " " + y);
 	    }		
 	}
     }
-    console.log("numSheep:" + numSheep + " numMovableTiger:" + numMovableTiger)
+    console.log("numSheep:" + numSheep + " numMovableTiger:" + numMovableTiger);
     return numSheep - numMovableTiger;
 }
 
@@ -245,12 +214,12 @@ function alphabeta(board, depth, alpha, beta){
 $(document).ready(function(){
     drawBoard();
     $('td').live('click',function(){
-	x = $(this).attr('x');
-	y = $(this).attr('y');
+	x = parseInt($(this).attr('x'));
+	y = parseInt($(this).attr('y'));
 	if(isValidMove(x,y)){
-	    //console.log(x + " " + y + " " + numSheepInBasket);
+	    console.log(x + " " + y + " " + numSheepsInBasket);
 	    board[x][y] = SHEEP;
-	    numSheepInBasket -= 1;
+	    numSheepsInBasket -= 1;
 	    tigersTurn = true;
 	    moveTiger();
 	}
