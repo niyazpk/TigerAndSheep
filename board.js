@@ -129,6 +129,7 @@ function unMakeMove(){
 
 }
 
+// Is the given point occupied by any piece?
 function isUnOccupied(point){
 
     x =	point[0];
@@ -162,6 +163,8 @@ function tooManySheepsAreKilled(){
     }
 }
 
+
+// Is the current game position and end-game position?
 function isTerminal(){
     if (areAllTigersBlocked() || tooManySheepsAreKilled()){
 	return true;
