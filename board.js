@@ -12,16 +12,16 @@ var moves = [];
 var board = [
     [TIGER, 0, 0, 0, TIGER],
     [0, 0, 0, 0, 0],
-    [TIGER, 0, TIGER, 0, 0],
-    [0, TIGER, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
     [TIGER, 0, 0, 0, TIGER]
 ];
 
 function drawBoard(){
     var html= "<table>";
-    for(x in board){
+    for(var x=0; x<5; x++){
 	html += "<tr>";
-	for(y in board[x]){
+	for(var y=0; y<5; y++){
 	    class = "item-" + board[x][y];
 	    html += "<td x="+x+" y="+y+" class='"+class+"'>" + board[x][y] + "</td>";
 	}
@@ -43,10 +43,10 @@ function isValidMove(x,y){
 }
 
 function moveTiger(){
-    evaluate();
+    //evaluate();
     var alpha = -INFINITY;
     var beta = INFINITY;
-    //alphabeta(board, DEPTH, alpha, beta);
+    alphabeta(board, DEPTH, alpha, beta);
 }
 
 function isTigersMove(depth){
@@ -106,8 +106,6 @@ function generateMoves(){
     if(isTigersMove()){
 	for(var x=0; x<5; x++){
 	    for(var y=0; y<5; y++){
-		//x = parseInt(x);
-		//y = parseInt(y);
 		if(board[x][y] == TIGER){
 		    if(canMove(x,y)){
 			if(isUnOccupied(x-1,y)){
@@ -132,7 +130,7 @@ function unMakeMove(){
 }
 
 function isUnOccupied(point){
-    
+
     x =	point[0];
     y = point[1];
     
@@ -144,10 +142,8 @@ function isUnOccupied(point){
 }
 
 function areAllTigersBlocked(){
-    for(x in board){
-	for(y in board[x]){
-	    x = parseInt(x);
-	    y = parseInt(y);
+    for(var x=0; x<5; x++){
+	for(var y=0; y<5; y++){
 	    if(board[x][y] == TIGER){
 		if(canMove(x,y)){
 		    return false;
@@ -174,9 +170,9 @@ function isTerminal(){
     }
 }
 
+// Can this piece move from this poistion to any adjascent space?
+// Note that a Tiger cannot move above a sheep if the Tiger is blocked in all positions.
 function canMove(x,y){
-    // Is horizontal or vertical movement possible?
-    
     var directions = possibleMoveDirectionsFrom(x,y);
     return directions.some(isUnOccupied);
 }
