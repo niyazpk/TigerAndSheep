@@ -4,6 +4,24 @@
 <script src="prototypes.js"></script>
 <script src="board.js"></script>
 <style>
+body{
+	background:url("game-bg.png") no-repeat scroll 0px 0px black;
+}
+
+#board {
+	width: 310px;
+	float: left;
+}
+
+#dashboard {
+	width: 200px;
+	float: left;	
+}
+
+#drag-sheep{
+	background: url("sheep.png") no-repeat scroll center center transparent;
+	margin-top:100px;
+}
 
 table {
 	background:url("game-board.png") no-repeat scroll center center transparent;
@@ -29,6 +47,12 @@ td.item-2 {
 </style>
 </head>
 <body>
-	<imsg src="game-board.png" />
+<div id="app-area">
+	<div id="board"></div>
+	<div id="dashboard">
+		<div id="drag-sheep"></div>
+	</div>
+</div>
+
 </body>
 </html>

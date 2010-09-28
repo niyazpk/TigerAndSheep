@@ -3,10 +3,10 @@ const EMPTY = 0; // Represents an empty spot
 const TIGER = 1; //  a Tiger
 const SHEEP = 2; // ...
 const INFINITY = 99999; // A very large number
-const DEPTH = 4; // How far should the alogorithm search? (the more the better)
+const DEPTH = 1; // How far should the alogorithm search? (the more the better)
 
 // Variables
-var numSheepsInBasket = 10; // Number of sheeps that is available
+var numSheepsInBasket = 20; // Number of sheeps that is available
 var numSheepKilled = 0;  // If more than 5 sheeps are killed, sheeps lose. 
 var bestMove = []; //Used to save the best move till now in the search Tree.
 
@@ -33,7 +33,7 @@ function drawBoard(){
 		html += "</tr>";
     }
     html += "</table>";
-    $('body').html(html);
+    $('#board').html(html);
 }
 
 function isValidMove(x,y){
@@ -54,6 +54,9 @@ function moveTiger(){
     alphabeta(DEPTH, alpha, beta);
     makeMove(bestMove);
     drawBoard();
+    if(numSheepKilled >= 5){
+    	alert("You lost the game. 5 Sheeps were killed.");
+    }
 }
 
 function isTigersMove(depth){
@@ -211,6 +214,7 @@ function makeMove(move){
 		midX = move[0] + (move[2] - move[0])/2;
 		midY = move[1] + (move[3] - move[1])/2;
 		board[midX][midY] = EMPTY;
+		numSheepKilled += 1;
 	}
 }
 
@@ -229,6 +233,7 @@ function unMakeMove(move){
 		midX = move[0] + (move[2] - move[0])/2;
 		midY = move[1] + (move[3] - move[1])/2;
 		board[midX][midY] = SHEEP;
+		numSheepKilled -= 1;
 	}
 }
 
@@ -347,8 +352,8 @@ function alphabeta( depth, alpha, beta){
 		v = -alphabeta( depth-1, -beta, -alpha);
 		
 		if(depth == DEPTH){
-			console.log(moves[i]);
-			console.log(v);
+			//console.log(moves[i]);
+			//console.log(v);
 		}
 		
 		if(v > alpha){
@@ -372,7 +377,7 @@ $(document).ready(function(){
 		    board[x][y] = SHEEP;
 		    drawBoard();
 		    numSheepsInBasket -= 1;
-		    setTimeout("moveTiger()", 10);
+		    setTimeout("moveTiger()", 100);
 		}
     });
 });
