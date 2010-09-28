@@ -3,6 +3,22 @@
 <script src="jquery.js"></script>
 <script src="prototypes.js"></script>
 <script src="board.js"></script>
+<script src="jquery-ui.js"></script>
+
+<script>
+$(document).ready(function() {
+
+		$( "#drag-sheep" ).draggable();
+		$( "td" ).droppable({
+			drop: function( event, ui ) {
+				$( this ).addClass( "item-2" );
+			}
+		});
+
+		
+});
+</script>
+
 <style>
 body{
 	background:url("game-bg.png") no-repeat scroll 0px 0px black;
@@ -19,8 +35,12 @@ body{
 }
 
 #drag-sheep{
-	background: url("sheep.png") no-repeat scroll center center transparent;
+	background:url("sheep.png") no-repeat scroll center center transparent;
+	height:40px;
 	margin-top:100px;
+	position:absolute;
+	top:154px;
+	width:40px;
 }
 
 table {
