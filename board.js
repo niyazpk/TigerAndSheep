@@ -1,15 +1,18 @@
-// constants
-const EMPTY = 0;
-const TIGER = 1;
-const SHEEP = 2;
-const INFINITY = 99999;
-const DEPTH = 1;
+// Constants
+const EMPTY = 0; // Represents an empty spot
+const TIGER = 1; //  a Tiger
+const SHEEP = 2; // ...
+const INFINITY = 99999; // A very large number
+const DEPTH = 4; // How far should the alogorithm search? (the more the better)
 
-var numSheepsInBasket = 10;
-var numSheepKilled = 0;
-var bestMove = [];
+// Variables
+var numSheepsInBasket = 10; // Number of sheeps that is available
+var numSheepKilled = 0;  // If more than 5 sheeps are killed, sheeps lose. 
+var bestMove = []; //Used to save the best move till now in the search Tree.
 
-var board = [
+// This is our representation of the board.
+// Notice the four tigers in the four corners.
+var board = [ 
     [TIGER, 0, 0, 0, TIGER],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -17,6 +20,8 @@ var board = [
     [TIGER, 0, 0, 0, TIGER]
 ];
 
+
+// Output the current state of the board to the screen.
 function drawBoard(){
     var html= "<table>";
     for(var x=0; x<5; x++){
@@ -120,7 +125,7 @@ function possibleCaptureDirectionsFrom(x,y){
 
 
 
-// Returns the possible *valid* moves that a tiger can make from the given position
+// Returns the possible *valid* moves that a tiger can make from the given position.
 // In addition to moves from possibleValidSheepMovesFrom(x,y) this includes capturing sheeps.
 function possibleValidTigerMovesFrom(x,y){
 
@@ -322,7 +327,8 @@ function evaluate(depth){
 	}
         
     value += numSheep - numMovableTiger;
-	//value = isTigersMove(depth) ? -value : value;
+    
+    value = isTigersMove(depth) ? -value : value;
     //console.log(value);
     return value;
 }
