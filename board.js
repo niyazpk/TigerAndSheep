@@ -57,6 +57,7 @@ function moveTiger(){
     if(numSheepKilled >= 5){
     	alert("You lost the game. 5 Sheeps were killed.");
     }
+    $( "td" ).droppable({drop: fn});
 }
 
 function isTigersMove(depth){

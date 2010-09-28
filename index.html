@@ -8,15 +8,32 @@
 <script>
 $(document).ready(function() {
 
-		$( "#drag-sheep" ).draggable();
-		$( "td" ).droppable({
-			drop: function( event, ui ) {
-				$( this ).addClass( "item-2" );
-			}
-		});
+    $( "#drag-sheep" ).draggable({
+        stop: function(event, ui) {
+           $('#drag-sheep').css('opacity', '0');           
+           $('#drag-sheep').css('top', '254px');
+           $('#drag-sheep').css('left', '318px');
+           $('#drag-sheep').animate({opacity: 1}, 2000);
+        }
+    });
+		$( "td" ).droppable({drop: fn});
 
 		
 });
+
+var fn = function( event, ui ) {
+				
+		x = parseInt($(this).attr('x'));
+		y = parseInt($(this).attr('y'));
+		if(isValidMove(x,y)){
+$( this ).addClass( "item-2" );
+		    board[x][y] = SHEEP;
+		    drawBoard();
+		    numSheepsInBasket -= 1;
+		    setTimeout("moveTiger()", 10);
+		}
+}
+
 </script>
 
 <style>
@@ -37,9 +54,8 @@ body{
 #drag-sheep{
 	background:url("sheep.png") no-repeat scroll center center transparent;
 	height:40px;
-	margin-top:100px;
 	position:absolute;
-	top:154px;
+	top:254px;
 	width:40px;
 }
 
